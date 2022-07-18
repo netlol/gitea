@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    for-gitea: 'true'
+spec:
+  selector:
+    app: mysql    
+  ports:
+  - port: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+    for-gitea: 'true'
+spec:  
+  selector:
+    matchLabels:
+      app: mysql
+  template:  
+    metadata:
+      labels:
+        app: mysql
+    spec:      
+      containers:
+      - name: mysql
+        image: mysql:8.0.29
+        envFrom:
+          - configMapRef:
+              name: gitea-db
+        resources:
+          limits:
+            memory: "1000Mi"
+            cpu: "1000m"
+        volumeMounts:
+          - name:  db-path
+            mountPath:  /var/lib/mysql
+        ports:
+          - containerPort: 3306
+            name: mysqlsock
+      volumes:
+        - name: db-path
+          hostPath:
+            path: /srv/mysql-db
+            type: DirectoryOrCreate
