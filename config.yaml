@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-db
+  labels:
+    app: gitea
+    for-gitea: 'true'
+data:
+  MYSQL_DATABASE: gitea
+  MYSQL_USER: gitea
+  MYSQL_ROOT_PASSWORD: ""
+  MYSQL_PASSWORD: ""
